@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,8 +20,10 @@ import {
 export default function CopingTools() {
   const [isBreathingActive, setIsBreathingActive] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState<'inhale' | 'hold' | 'exhale'>('inhale');
+  const [countdown, setCountdown] = useState(4);
   const [journalEntry, setJournalEntry] = useState('');
   const [currentAffirmation, setCurrentAffirmation] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const affirmations = [
     "I am worthy of love and respect.",
@@ -40,14 +42,56 @@ export default function CopingTools() {
     exhale: 6
   };
 
+  useEffect(() => {
+    if (isBreathingActive) {
+      setCountdown(breathingCycles[breathingPhase]);
+      
+      intervalRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            // Move to next phase
+            if (breathingPhase === 'inhale') {
+              setBreathingPhase('hold');
+              return breathingCycles.hold;
+            } else if (breathingPhase === 'hold') {
+              setBreathingPhase('exhale');
+              return breathingCycles.exhale;
+            } else {
+              setBreathingPhase('inhale');
+              return breathingCycles.inhale;
+            }
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isBreathingActive, breathingPhase, breathingCycles]);
+
   const startBreathing = () => {
     setIsBreathingActive(true);
-    // In a real app, you'd implement the breathing cycle logic here
+    setBreathingPhase('inhale');
+    setCountdown(breathingCycles.inhale);
   };
 
   const stopBreathing = () => {
     setIsBreathingActive(false);
     setBreathingPhase('inhale');
+    setCountdown(4);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
   };
 
   const nextAffirmation = () => {
@@ -115,7 +159,7 @@ export default function CopingTools() {
                         ) : 'Ready?'}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        {isBreathingActive && `${breathingCycles[breathingPhase]} seconds`}
+                        {isBreathingActive && `${countdown} seconds`}
                       </div>
                     </div>
                   </div>
