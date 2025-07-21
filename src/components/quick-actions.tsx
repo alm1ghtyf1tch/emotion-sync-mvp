@@ -67,21 +67,21 @@ export function QuickActions() {
               key={action.label}
               variant={action.primary ? "default" : action.urgent ? "destructive" : "outline"}
               asChild
-              className={`h-auto p-4 flex flex-col items-center space-y-2 transition-all duration-300 hover:scale-105 ${
+              className={`h-auto min-h-[120px] p-3 flex flex-col items-center justify-center space-y-2 transition-all duration-300 hover:scale-105 ${
                 action.primary 
                   ? "bg-gradient-to-br from-primary to-primary/80 gentle-glow" 
                   : action.urgent
                   ? "bg-gradient-to-br from-destructive to-destructive/80"
-                  : "hover:bg-secondary/80"
+                  : "bg-gradient-to-br from-secondary/50 to-muted/30 hover:from-secondary/70 hover:to-muted/50 hover:shadow-lg"
               }`}
             >
-              <a href={action.href} className="text-center w-full">
+              <a href={action.href} className="text-center w-full flex flex-col items-center justify-center h-full">
                 {action.color && (
                   <div className={`emotion-indicator w-3 h-3 ${action.color} rounded-full mx-auto mb-1`} />
                 )}
-                <IconComponent className="w-6 h-6 mx-auto mb-2" />
-                <div className="text-sm font-medium">{action.label}</div>
-                <div className="text-xs opacity-80">{action.description}</div>
+                <IconComponent className="w-6 h-6 mx-auto mb-2 flex-shrink-0" />
+                <div className="text-sm font-medium leading-tight px-1 break-words">{action.label}</div>
+                <div className="text-xs opacity-80 leading-tight px-1 break-words">{action.description}</div>
               </a>
             </Button>
           );
