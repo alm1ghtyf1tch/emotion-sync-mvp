@@ -14,7 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      privacy_settings: {
+        Row: {
+          allow_analytics: boolean | null
+          created_at: string
+          data_retention_months: number | null
+          id: string
+          public_profile: boolean | null
+          share_progress_therapist: boolean | null
+          share_statistics: boolean | null
+          show_mood_trends: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allow_analytics?: boolean | null
+          created_at?: string
+          data_retention_months?: number | null
+          id?: string
+          public_profile?: boolean | null
+          share_progress_therapist?: boolean | null
+          share_statistics?: boolean | null
+          show_mood_trends?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allow_analytics?: boolean | null
+          created_at?: string
+          data_retention_months?: number | null
+          id?: string
+          public_profile?: boolean | null
+          share_progress_therapist?: boolean | null
+          share_statistics?: boolean | null
+          show_mood_trends?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          birthday: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone_number: string | null
+          school: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          birthday?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone_number?: string | null
+          school?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          birthday?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone_number?: string | null
+          school?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

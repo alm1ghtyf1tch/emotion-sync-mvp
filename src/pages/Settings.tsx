@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Shield, 
   Bell, 
@@ -17,10 +20,29 @@ import {
   Heart,
   Trash2,
   Download,
-  Upload
+  Upload,
+  Calendar,
+  School,
+  MapPin,
+  Globe,
+  Eye,
+  Users,
+  TrendingUp
 } from "lucide-react";
 
 export default function Settings() {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const [profile, setProfile] = useState({
+    full_name: '',
+    birthday: '',
+    school: '',
+    bio: '',
+    phone_number: ''
+  });
+
   const [notifications, setNotifications] = useState({
     dailyReminders: true,
     moodAlerts: false,
@@ -28,11 +50,135 @@ export default function Settings() {
     emergencyContacts: true
   });
 
-  const [privacy, setPrivacy] = useState({
-    shareWithTherapist: false,
-    anonymousData: true,
-    dataRetention: "1year"
+  const [privacySettings, setPrivacySettings] = useState({
+    share_statistics: false,
+    show_mood_trends: false,
+    allow_analytics: true,
+    data_retention_months: 12,
+    share_progress_therapist: false,
+    public_profile: false
   });
+
+  // Load user data on component mount
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  const loadUserData = async () => {
+    try {
+      // Load profile data
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        throw profileError;
+      }
+
+      if (profileData) {
+        setProfile({
+          full_name: profileData.full_name || '',
+          birthday: profileData.birthday || '',
+          school: profileData.school || '',
+          bio: profileData.bio || '',
+          phone_number: profileData.phone_number || ''
+        });
+      }
+
+      // Load privacy settings
+      const { data: privacyData, error: privacyError } = await supabase
+        .from('privacy_settings')
+        .select('*')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (privacyError && privacyError.code !== 'PGRST116') {
+        throw privacyError;
+      }
+
+      if (privacyData) {
+        setPrivacySettings({
+          share_statistics: privacyData.share_statistics || false,
+          show_mood_trends: privacyData.show_mood_trends || false,
+          allow_analytics: privacyData.allow_analytics || true,
+          data_retention_months: privacyData.data_retention_months || 12,
+          share_progress_therapist: privacyData.share_progress_therapist || false,
+          public_profile: privacyData.public_profile || false
+        });
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      toast({
+        title: "Error loading settings",
+        description: "Could not load your settings. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const saveProfile = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: user.id,
+          ...profile
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been saved successfully."
+      });
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      toast({
+        title: "Error saving profile",
+        description: "Could not save your profile. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const savePrivacySettings = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('privacy_settings')
+        .upsert({
+          user_id: user.id,
+          ...privacySettings
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Privacy settings updated",
+        description: "Your privacy preferences have been saved."
+      });
+    } catch (error) {
+      console.error('Error saving privacy settings:', error);
+      toast({
+        title: "Error saving settings",
+        description: "Could not save your privacy settings. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
@@ -65,15 +211,60 @@ export default function Settings() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <Label className="text-base font-medium">Share data with therapist</Label>
+                    <Label className="text-base font-medium">Share progress with therapist</Label>
                     <p className="text-sm text-muted-foreground">
                       Allow your connected therapist to view your mood trends and insights
                     </p>
                   </div>
                   <Switch 
-                    checked={privacy.shareWithTherapist}
+                    checked={privacySettings.share_progress_therapist}
                     onCheckedChange={(checked) => 
-                      setPrivacy(prev => ({ ...prev, shareWithTherapist: checked }))
+                      setPrivacySettings(prev => ({ ...prev, share_progress_therapist: checked }))
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="text-base font-medium">Share statistics with community</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Allow other users to see your anonymized mood statistics and trends
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={privacySettings.share_statistics}
+                    onCheckedChange={(checked) => 
+                      setPrivacySettings(prev => ({ ...prev, share_statistics: checked }))
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="text-base font-medium">Show mood trends publicly</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Display your mood trends on your public profile (if enabled)
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={privacySettings.show_mood_trends}
+                    onCheckedChange={(checked) => 
+                      setPrivacySettings(prev => ({ ...prev, show_mood_trends: checked }))
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="text-base font-medium">Public profile</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Make your profile visible to other EmotionSync users
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={privacySettings.public_profile}
+                    onCheckedChange={(checked) => 
+                      setPrivacySettings(prev => ({ ...prev, public_profile: checked }))
                     }
                   />
                 </div>
@@ -86,9 +277,9 @@ export default function Settings() {
                     </p>
                   </div>
                   <Switch 
-                    checked={privacy.anonymousData}
+                    checked={privacySettings.allow_analytics}
                     onCheckedChange={(checked) => 
-                      setPrivacy(prev => ({ ...prev, anonymousData: checked }))
+                      setPrivacySettings(prev => ({ ...prev, allow_analytics: checked }))
                     }
                   />
                 </div>
@@ -96,26 +287,30 @@ export default function Settings() {
                 <div className="space-y-3">
                   <Label className="text-base font-medium">Data retention period</Label>
                   <Select 
-                    value={privacy.dataRetention}
+                    value={privacySettings.data_retention_months.toString()}
                     onValueChange={(value) => 
-                      setPrivacy(prev => ({ ...prev, dataRetention: value }))
+                      setPrivacySettings(prev => ({ ...prev, data_retention_months: parseInt(value) }))
                     }
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="3months">3 months</SelectItem>
-                      <SelectItem value="6months">6 months</SelectItem>
-                      <SelectItem value="1year">1 year</SelectItem>
-                      <SelectItem value="2years">2 years</SelectItem>
-                      <SelectItem value="indefinite">Keep indefinitely</SelectItem>
+                      <SelectItem value="3">3 months</SelectItem>
+                      <SelectItem value="6">6 months</SelectItem>
+                      <SelectItem value="12">1 year</SelectItem>
+                      <SelectItem value="24">2 years</SelectItem>
+                      <SelectItem value="0">Keep indefinitely</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-sm text-muted-foreground">
                     How long to keep your conversation history and mood data
                   </p>
                 </div>
+
+                <Button onClick={savePrivacySettings} disabled={loading} className="w-full">
+                  Save Privacy Settings
+                </Button>
 
                 <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
                   <h3 className="font-semibold text-sm mb-2 flex items-center">
@@ -237,57 +432,74 @@ export default function Settings() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Preferred name</Label>
-                    <Input placeholder="How should we address you?" />
+                    <Label htmlFor="full_name">Full Name</Label>
+                    <Input 
+                      id="full_name"
+                      value={profile.full_name}
+                      onChange={(e) => setProfile(prev => ({ ...prev, full_name: e.target.value }))}
+                      placeholder="Your full name"
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label>Age range</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select age range" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="18-25">18-25</SelectItem>
-                        <SelectItem value="26-35">26-35</SelectItem>
-                        <SelectItem value="36-45">36-45</SelectItem>
-                        <SelectItem value="46-55">46-55</SelectItem>
-                        <SelectItem value="56-65">56-65</SelectItem>
-                        <SelectItem value="65+">65+</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="birthday">Birthday</Label>
+                    <Input 
+                      id="birthday"
+                      type="date"
+                      value={profile.birthday}
+                      onChange={(e) => setProfile(prev => ({ ...prev, birthday: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="school">School/Institution</Label>
+                    <Input 
+                      id="school"
+                      value={profile.school}
+                      onChange={(e) => setProfile(prev => ({ ...prev, school: e.target.value }))}
+                      placeholder="Your school or workplace"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone_number">Phone Number</Label>
+                    <Input 
+                      id="phone_number"
+                      type="tel"
+                      value={profile.phone_number}
+                      onChange={(e) => setProfile(prev => ({ ...prev, phone_number: e.target.value }))}
+                      placeholder="(555) 123-4567"
+                    />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Communication style preference</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="How should your AI companion communicate?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="formal">Formal and professional</SelectItem>
-                      <SelectItem value="casual">Casual and friendly</SelectItem>
-                      <SelectItem value="empathetic">Warm and empathetic</SelectItem>
-                      <SelectItem value="direct">Direct and concise</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Goals & focus areas (optional)</Label>
+                  <Label htmlFor="bio">Bio</Label>
                   <Textarea 
-                    placeholder="What would you like to work on with EmotionSync? (e.g., anxiety management, mood tracking, building resilience)"
+                    id="bio"
+                    value={profile.bio}
+                    onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
+                    placeholder="Tell us a bit about yourself..."
                     className="min-h-[100px]"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Therapist connection code (optional)</Label>
-                  <Input placeholder="Enter code provided by your therapist" />
-                  <p className="text-sm text-muted-foreground">
-                    This allows your therapist to view anonymized insights from your EmotionSync usage
-                  </p>
+                <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+                  <h3 className="font-semibold text-sm mb-2 flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    Profile Information
+                  </h3>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Your profile information helps personalize your EmotionSync experience</li>
+                    <li>• Only share information you're comfortable with</li>
+                    <li>• You can update or remove any information at any time</li>
+                    <li>• Your data is always kept secure and private</li>
+                  </ul>
                 </div>
+
+                <Button onClick={saveProfile} disabled={loading} className="w-full">
+                  Save Profile
+                </Button>
               </div>
             </Card>
           </TabsContent>

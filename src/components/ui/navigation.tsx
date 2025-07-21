@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield, LogOut } from "lucide-react";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { signOut, user } = useAuth();
 
   const navItems = [
     { to: "/", label: "Home", icon: Heart },
@@ -44,6 +46,15 @@ export function Navigation() {
                 <span>{item.label}</span>
               </NavLink>
             ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={signOut}
+              className="ml-2 text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -78,6 +89,18 @@ export function Navigation() {
                   <span>{item.label}</span>
                 </NavLink>
               ))}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  signOut();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center space-x-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground justify-start"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Sign Out</span>
+              </Button>
             </div>
           </div>
         )}
