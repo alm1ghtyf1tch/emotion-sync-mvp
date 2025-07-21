@@ -75,13 +75,13 @@ export function QuickActions() {
                   : "bg-gradient-to-br from-secondary/50 to-muted/30 hover:from-secondary/70 hover:to-muted/50 hover:shadow-lg"
               }`}
             >
-              <a href={action.href} className="text-center w-full flex flex-col items-center justify-center h-full">
+              <a href={action.href} className="text-center w-full flex flex-col items-center justify-center h-full max-w-full">
                 {action.color && (
                   <div className={`emotion-indicator w-3 h-3 ${action.color} rounded-full mx-auto mb-1`} />
                 )}
-                <IconComponent className="w-6 h-6 mx-auto mb-2 flex-shrink-0" />
-                <div className="text-sm font-medium leading-tight px-1 break-words">{action.label}</div>
-                <div className="text-xs opacity-80 leading-tight px-1 break-words">{action.description}</div>
+                <IconComponent className="w-5 h-5 mx-auto mb-2 flex-shrink-0" />
+                <div className="text-xs font-medium leading-tight px-2 line-clamp-2 max-w-full overflow-hidden text-ellipsis">{action.label}</div>
+                <div className="text-[10px] opacity-80 leading-tight px-2 line-clamp-1 max-w-full overflow-hidden text-ellipsis">{action.description}</div>
               </a>
             </Button>
           );
