@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Smile, Meh, Frown, Heart, Zap } from "lucide-react";
+import { useDailyMood } from "@/hooks/useDailyMood";
+import { useAuth } from "@/contexts/AuthContext";
 
 const moodOptions = [
   { 
@@ -47,11 +49,25 @@ interface MoodTrackerProps {
 }
 
 export function MoodTracker({ onMoodSelect, currentMood }: MoodTrackerProps) {
+  const { user } = useAuth();
+  const { todayMood, saveMood, loading } = useDailyMood();
   const [selectedMood, setSelectedMood] = useState<number | null>(currentMood || null);
 
-  const handleMoodSelect = (mood: number) => {
+  // Update selected mood when todayMood changes
+  useEffect(() => {
+    if (todayMood !== null) {
+      setSelectedMood(todayMood);
+    }
+  }, [todayMood]);
+
+  const handleMoodSelect = async (mood: number) => {
     setSelectedMood(mood);
     onMoodSelect?.(mood);
+    
+    // Save mood if user is authenticated
+    if (user) {
+      await saveMood(mood);
+    }
   };
 
   return (
@@ -73,6 +89,7 @@ export function MoodTracker({ onMoodSelect, currentMood }: MoodTrackerProps) {
               key={mood.value}
               variant={isSelected ? "default" : "outline"}
               onClick={() => handleMoodSelect(mood.value)}
+              disabled={loading}
               className={`h-auto p-4 flex flex-col items-center space-y-2 transition-all duration-300 hover:scale-105 ${
                 isSelected 
                   ? "bg-primary/20 border-primary ring-2 ring-primary/30" 
@@ -100,6 +117,7 @@ export function MoodTracker({ onMoodSelect, currentMood }: MoodTrackerProps) {
             Thank you for sharing. Your emotional awareness is a strength. 
             {selectedMood <= 2 && " Remember, it's okay to not be okay. You're not alone."}
             {selectedMood >= 4 && " I'm glad you're feeling good today!"}
+            {user && " Your mood has been saved for today."}
           </p>
         </div>
       )}

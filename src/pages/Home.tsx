@@ -18,10 +18,27 @@ import heroImage from "@/assets/hero-image.jpg";
 export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [todayMood, setTodayMood] = useState<number | null>(null);
+  const [dailyInspiration, setDailyInspiration] = useState<string>("");
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    // Set daily inspiration based on current date to ensure it changes daily
+    const today = new Date().toDateString();
+    const storedDate = localStorage.getItem('inspirationDate');
+    const storedMessage = localStorage.getItem('dailyInspiration');
+
+    if (storedDate === today && storedMessage) {
+      setDailyInspiration(storedMessage);
+    } else {
+      const newMessage = getMotivationalMessage();
+      setDailyInspiration(newMessage);
+      localStorage.setItem('inspirationDate', today);
+      localStorage.setItem('dailyInspiration', newMessage);
+    }
   }, []);
 
   const getGreeting = () => {
@@ -80,7 +97,7 @@ export default function Home() {
             <Sparkles className="w-6 h-6 text-accent mt-1 animate-gentle-pulse" />
             <div>
               <h2 className="font-semibold mb-1">Daily Inspiration</h2>
-              <p className="text-muted-foreground italic">"{getMotivationalMessage()}"</p>
+              <p className="text-muted-foreground italic">"{dailyInspiration}"</p>
             </div>
           </div>
         </Card>

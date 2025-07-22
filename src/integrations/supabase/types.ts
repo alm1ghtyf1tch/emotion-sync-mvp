@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_moods: {
+        Row: {
+          created_at: string
+          id: string
+          mood_date: string
+          mood_value: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mood_date?: string
+          mood_value: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mood_date?: string
+          mood_value?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       privacy_settings: {
         Row: {
           allow_analytics: boolean | null

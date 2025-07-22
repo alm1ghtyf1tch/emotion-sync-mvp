@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield, LogOut } from "lucide-react";
+import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield, LogOut, LogIn } from "lucide-react";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,10 +10,12 @@ export function Navigation() {
 
   const navItems = [
     { to: "/", label: "Home", icon: Heart },
-    { to: "/companion", label: "AI Companion", icon: MessageCircle },
-    { to: "/coping-tools", label: "Coping Tools", icon: Activity },
-    { to: "/emotion-board", label: "EmotionBoard", icon: Shield },
-    { to: "/settings", label: "Settings", icon: Settings },
+    ...(user ? [
+      { to: "/companion", label: "AI Companion", icon: MessageCircle },
+      { to: "/coping-tools", label: "Coping Tools", icon: Activity },
+      { to: "/emotion-board", label: "EmotionBoard", icon: Shield },
+      { to: "/settings", label: "Settings", icon: Settings },
+    ] : [])
   ];
 
   return (
@@ -46,15 +48,25 @@ export function Navigation() {
                 <span>{item.label}</span>
               </NavLink>
             ))}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={signOut}
-              className="ml-2 text-muted-foreground hover:text-foreground"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
+            {user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={signOut}
+                className="ml-2 text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            ) : (
+              <NavLink
+                to="/auth"
+                className="ml-2 text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Sign In</span>
+              </NavLink>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -89,18 +101,29 @@ export function Navigation() {
                   <span>{item.label}</span>
                 </NavLink>
               ))}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  signOut();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="flex items-center space-x-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground justify-start"
-              >
-                <LogOut className="w-5 h-5" />
-                <span>Sign Out</span>
-              </Button>
+              {user ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    signOut();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center space-x-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground justify-start"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Sign Out</span>
+                </Button>
+              ) : (
+                <NavLink
+                  to="/auth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center space-x-3 px-3 py-3 text-sm font-medium text-muted-foreground hover:text-foreground"
+                >
+                  <LogIn className="w-5 h-5" />
+                  <span>Sign In</span>
+                </NavLink>
+              )}
             </div>
           </div>
         )}

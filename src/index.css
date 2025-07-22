@@ -66,20 +66,108 @@ All colors MUST be HSL.
     --transition-smooth: all 0.3s ease-out;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Great Theme - Joyful, Energetic, Confident */
+  [data-theme="great"] {
+    --background: 44 100% 95%; /* #FDF6E3 warm cream */
+    --foreground: 25 100% 20%;
+    --card: 44 100% 97%;
+    --card-foreground: 25 100% 20%;
+    --primary: 48 100% 62%; /* #FFD43B sun yellow */
+    --primary-foreground: 25 100% 20%;
+    --secondary: 22 95% 63%; /* #FF8C42 bright orange */
+    --secondary-foreground: 25 100% 20%;
+    --accent: 22 95% 63%;
+    --accent-foreground: 25 100% 20%;
+    --muted: 44 100% 90%;
+    --muted-foreground: 25 50% 40%;
+    --border: 44 80% 85%;
+    --input: 44 100% 97%;
+    --ring: 48 100% 62%;
+  }
+
+  /* Good Theme - Positive, Balanced, Comfortable */
+  [data-theme="good"] {
+    --background: 112 43% 97%; /* #F3F9F1 pale mint */
+    --foreground: 112 30% 20%;
+    --card: 112 43% 98%;
+    --card-foreground: 112 30% 20%;
+    --primary: 122 30% 74%; /* #A3D9A5 fresh green */
+    --primary-foreground: 112 30% 20%;
+    --secondary: 41 89% 78%; /* #FDD692 soft peach */
+    --secondary-foreground: 112 30% 20%;
+    --accent: 41 89% 78%;
+    --accent-foreground: 112 30% 20%;
+    --muted: 112 43% 92%;
+    --muted-foreground: 112 20% 40%;
+    --border: 112 30% 85%;
+    --input: 112 43% 98%;
+    --ring: 122 30% 74%;
+  }
+
+  /* Okay Theme - Neutral, Indifferent, Content */
+  [data-theme="okay"] {
+    --background: 0 0% 94%; /* #F0F0F0 soft grey */
+    --foreground: 210 15% 25%;
+    --card: 0 0% 96%;
+    --card-foreground: 210 15% 25%;
+    --primary: 206 25% 84%; /* #D6E4E5 light slate blue */
+    --primary-foreground: 210 15% 25%;
+    --secondary: 0 0% 75%; /* #C0C0C0 cool grey */
+    --secondary-foreground: 210 15% 25%;
+    --accent: 0 0% 75%;
+    --accent-foreground: 210 15% 25%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 210 10% 45%;
+    --border: 0 0% 85%;
+    --input: 0 0% 96%;
+    --ring: 206 25% 84%;
+  }
+
+  /* Low Theme - Sad, Tired, Quiet */
+  [data-theme="low"] {
+    --background: 239 62% 96%; /* #E8EAF6 very soft indigo */
+    --foreground: 239 40% 25%;
+    --card: 239 62% 97%;
+    --card-foreground: 239 40% 25%;
+    --primary: 239 46% 73%; /* #9FA8DA dusty lavender */
+    --primary-foreground: 239 40% 25%;
+    --secondary: 258 59% 74%; /* #B39DDB subtle purple */
+    --secondary-foreground: 239 40% 25%;
+    --accent: 258 59% 74%;
+    --accent-foreground: 239 40% 25%;
+    --muted: 239 62% 92%;
+    --muted-foreground: 239 30% 45%;
+    --border: 239 40% 85%;
+    --input: 239 62% 97%;
+    --ring: 239 46% 73%;
+  }
+
+  /* Struggling Theme - Anxious, Depressed, Need Support */
+  [data-theme="struggling"] {
+    --background: 218 100% 98%; /* #F5F7FB pale blue-white */
+    --foreground: 214 25% 25%;
+    --card: 218 100% 99%;
+    --card-foreground: 214 25% 25%;
+    --primary: 207 50% 74%; /* #A5C8E1 muted blue */
+    --primary-foreground: 214 25% 25%;
+    --secondary: 344 28% 78%; /* #D9B8C4 muted rose pink */
+    --secondary-foreground: 214 25% 25%;
+    --accent: 344 28% 78%;
+    --accent-foreground: 214 25% 25%;
+    --muted: 218 100% 95%;
+    --muted-foreground: 214 15% 45%;
+    --border: 214 20% 85%;
+    --input: 218 100% 99%;
+    --ring: 207 50% 74%;
   }
 
 }

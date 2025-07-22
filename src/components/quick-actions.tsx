@@ -8,53 +8,65 @@ import {
   Wind,
   Heart
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const quickActions = [
   {
     label: "Talk to AI Companion",
     description: "Start a conversation",
     icon: MessageCircle,
-    href: "/companion",
+    path: "/companion",
     primary: true
   },
   {
     label: "Breathing Exercise",
     description: "5-minute calm",
     icon: Wind,
-    href: "/coping-tools?tool=breathing",
+    path: "/coping-tools?tool=breathing",
     color: "emotion-calm"
   },
   {
     label: "Journal Entry",
     description: "Write your thoughts",
     icon: BookOpen,
-    href: "/coping-tools?tool=journal",
+    path: "/coping-tools?tool=journal",
     color: "emotion-happy"
   },
   {
     label: "Crisis Support",
     description: "Get immediate help",
     icon: Phone,
-    href: "/crisis-support",
+    path: "/crisis-support",
     urgent: true
   },
   {
     label: "Affirmations",
     description: "Positive reminders",
     icon: Heart,
-    href: "/coping-tools?tool=affirmations",
+    path: "/coping-tools?tool=affirmations",
     color: "emotion-calm"
   },
   {
     label: "Mood Reflection",
     description: "Deeper insights",
     icon: Activity,
-    href: "/coping-tools?tool=reflection",
+    path: "/coping-tools?tool=reflection",
     color: "emotion-anxious"
   }
 ];
 
 export function QuickActions() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleActionClick = (path: string) => {
+    if (!user && path !== "/") {
+      navigate("/auth");
+      return;
+    }
+    navigate(path);
+  };
   return (
     <Card className="p-6">
       <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
@@ -66,7 +78,7 @@ export function QuickActions() {
             <Button
               key={action.label}
               variant={action.primary ? "default" : action.urgent ? "destructive" : "outline"}
-              asChild
+              onClick={() => handleActionClick(action.path)}
               className={`h-auto min-h-[120px] p-3 flex flex-col items-center justify-center space-y-2 transition-all duration-300 hover:scale-105 ${
                 action.primary 
                   ? "bg-gradient-to-br from-primary to-primary/80 gentle-glow" 
@@ -75,14 +87,14 @@ export function QuickActions() {
                   : "bg-gradient-to-br from-secondary/50 to-muted/30 hover:from-secondary/70 hover:to-muted/50 hover:shadow-lg"
               }`}
             >
-              <a href={action.href} className="text-center w-full flex flex-col items-center justify-center h-full max-w-full">
+              <div className="text-center w-full flex flex-col items-center justify-center h-full max-w-full">
                 {action.color && (
                   <div className={`emotion-indicator w-3 h-3 ${action.color} rounded-full mx-auto mb-1`} />
                 )}
                 <IconComponent className="w-5 h-5 mx-auto mb-2 flex-shrink-0" />
                 <div className="text-xs font-medium leading-tight px-2 line-clamp-2 max-w-full overflow-hidden text-ellipsis">{action.label}</div>
                 <div className="text-[10px] opacity-80 leading-tight px-2 line-clamp-1 max-w-full overflow-hidden text-ellipsis">{action.description}</div>
-              </a>
+              </div>
             </Button>
           );
         })}
