@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { FocusModes } from "@/components/FocusModes";
 import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield, LogOut, LogIn } from "lucide-react";
 
 export function Navigation() {
@@ -48,25 +49,30 @@ export function Navigation() {
                 <span>{item.label}</span>
               </NavLink>
             ))}
-            {user ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={signOut}
-                className="ml-2 text-muted-foreground hover:text-foreground"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
-            ) : (
-              <NavLink
-                to="/auth"
-                className="ml-2 text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2"
-              >
-                <LogIn className="w-4 h-4" />
-                <span>Sign In</span>
-              </NavLink>
-            )}
+            
+            <div className="flex items-center space-x-2 ml-2">
+              <FocusModes />
+              
+              {user ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={signOut}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              ) : (
+                <NavLink
+                  to="/auth"
+                  className="text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
+                </NavLink>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}

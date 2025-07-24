@@ -88,11 +88,27 @@ export default function Companion() {
     setNewMessage('');
     setIsTyping(true);
 
-    // Simulate AI thinking time
-    setTimeout(() => {
+    try {
+      // Call the Flask API
+      const response = await fetch('https://54823ca99089.ngrok-free.app/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: newMessage
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: aiResponses[Math.floor(Math.random() * aiResponses.length)],
+        content: data.reply || "I'm here to listen and support you.",
         sender: 'ai',
         timestamp: new Date(),
         emotion: 'calm'
@@ -100,7 +116,21 @@ export default function Companion() {
       
       setMessages(prev => [...prev, aiResponse]);
       setIsTyping(false);
-    }, 1500 + Math.random() * 1000);
+    } catch (error) {
+      console.error('API Error:', error);
+      
+      // Fallback message on error
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: `⚠️ Sorry, something went wrong with EmotionSync AI. Please try again later.\n_(Error details: ${error instanceof Error ? error.message : 'Unknown error'})_`,
+        sender: 'ai',
+        timestamp: new Date(),
+        emotion: 'calm'
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+      setIsTyping(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -135,7 +165,7 @@ export default function Companion() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Header */}
-        <Card className="mb-6 p-6 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">
+        <Card className="glass-effect mb-6 p-6 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center animate-gentle-pulse">
@@ -163,7 +193,7 @@ export default function Companion() {
         </Card>
 
         {/* Chat Container */}
-        <Card className="flex flex-col h-[600px]">
+        <Card className="glass-effect flex flex-col h-[600px]">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.map((message) => (

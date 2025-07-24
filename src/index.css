@@ -217,6 +217,27 @@ All colors MUST be HSL.
     background: var(--gradient-calm);
     border-radius: var(--radius);
   }
+
+  /* Glass Effect Styles */
+  .glass-effect {
+    backdrop-filter: blur(12px);
+    background: hsla(var(--background) / 0.8);
+    border: 1px solid hsla(var(--border) / 0.5);
+    box-shadow: 0 8px 32px hsla(var(--foreground) / 0.1);
+  }
+
+  .glass-dropdown {
+    backdrop-filter: blur(16px);
+    background: hsla(var(--card) / 0.95);
+    border: 1px solid hsla(var(--border) / 0.5);
+    box-shadow: 0 12px 40px hsla(var(--foreground) / 0.15);
+  }
+
+  .glass-card {
+    backdrop-filter: blur(8px);
+    background: hsla(var(--card) / 0.7);
+    border: 1px solid hsla(var(--border) / 0.3);
+  }
 }
 
 @keyframes gentle-pulse {
