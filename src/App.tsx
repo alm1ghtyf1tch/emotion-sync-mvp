@@ -14,6 +14,7 @@ import EmotionBoard from "./pages/EmotionBoard";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Footer from "@/components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
                 <>
                   <Navigation />
                   <Home />
+                  <Footer />
                 </>
               } />
               <Route path="/*" element={
@@ -43,6 +45,7 @@ const App = () => (
                     <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
+                  <Footer />
                 </ProtectedRoute>
               } />
             </Routes>
