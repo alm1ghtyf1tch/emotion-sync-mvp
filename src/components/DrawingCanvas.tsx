@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { Canvas as FabricCanvas, Circle, Rect } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Brush, Square, Circle as CircleIcon, Save, Upload, RotateCcw } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Brush, Square, Circle as CircleIcon, Save, Upload, RotateCcw, Palette } from "lucide-react";
 import { toast } from "sonner";
 
 export function DrawingCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeTool, setActiveTool] = useState<"select" | "draw" | "rectangle" | "circle">("draw");
+  const [brushColor, setBrushColor] = useState("#333333");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function DrawingCanvas() {
 
     // Initialize the freeDrawingBrush with null checks
     if (canvas.freeDrawingBrush) {
-      canvas.freeDrawingBrush.color = "#333333";
+      canvas.freeDrawingBrush.color = brushColor;
       canvas.freeDrawingBrush.width = 3;
     }
     canvas.isDrawingMode = true;
@@ -40,10 +42,10 @@ export function DrawingCanvas() {
     fabricCanvas.isDrawingMode = activeTool === "draw";
     
     if (activeTool === "draw" && fabricCanvas.freeDrawingBrush) {
-      fabricCanvas.freeDrawingBrush.color = "#333333";
+      fabricCanvas.freeDrawingBrush.color = brushColor;
       fabricCanvas.freeDrawingBrush.width = 3;
     }
-  }, [activeTool, fabricCanvas]);
+  }, [activeTool, brushColor, fabricCanvas]);
 
   const handleToolClick = (tool: typeof activeTool) => {
     setActiveTool(tool);
@@ -124,7 +126,7 @@ export function DrawingCanvas() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Drawing Space</h3>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button
               variant={activeTool === "draw" ? "default" : "outline"}
               size="sm"
@@ -146,6 +148,40 @@ export function DrawingCanvas() {
             >
               <CircleIcon className="w-4 h-4" />
             </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Palette className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64">
+                <div className="space-y-3">
+                  <h4 className="font-medium">Brush Color</h4>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={brushColor}
+                      onChange={(e) => setBrushColor(e.target.value)}
+                      className="w-12 h-8 rounded border cursor-pointer"
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      Current: {brushColor}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-6 gap-2">
+                    {['#000000', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', 
+                      '#00ffff', '#ffa500', '#800080', '#008000', '#ffc0cb', '#a52a2a'].map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setBrushColor(color)}
+                        className="w-8 h-8 rounded border-2 border-gray-300 hover:border-gray-400 cursor-pointer"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
