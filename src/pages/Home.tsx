@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { MoodTracker } from "@/components/mood-tracker";
 import { QuickActions } from "@/components/quick-actions";
 import { MoodChart } from "@/components/mood-chart";
+import { Footer } from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   MessageCircle, 
   Sparkles, 
@@ -16,6 +18,7 @@ import {
 import heroImage from "@/assets/hero-image.jpg";
 
 export default function Home() {
+  const { user } = useAuth();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [todayMood, setTodayMood] = useState<number | null>(null);
   const [dailyInspiration, setDailyInspiration] = useState<string>("");
@@ -81,7 +84,7 @@ export default function Home() {
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-2">
-              {getGreeting()}, <span className="text-primary">friend</span>
+              {getGreeting()}, <span className="text-primary">{user?.user_metadata?.full_name || "friend"}</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
               Welcome to your safe space for emotional support and growth.
@@ -187,6 +190,8 @@ export default function Home() {
           </Card>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 }

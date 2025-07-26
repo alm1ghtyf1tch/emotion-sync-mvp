@@ -9,39 +9,39 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark theme with purple undertones for emotional warmth */
-    --background: 255 15% 8%;
-    --foreground: 210 20% 95%;
+    /* Light calming theme with soft, low-contrast colors */
+    --background: 180 30% 96%; /* Light mint #CAF4F4 */
+    --foreground: 30 15% 30%;
 
-    --card: 255 20% 12%;
-    --card-foreground: 210 20% 95%;
+    --card: 60 50% 98%; /* Cream white #FCFFE9 */
+    --card-foreground: 30 15% 30%;
 
-    --popover: 255 20% 12%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 60 50% 98%;
+    --popover-foreground: 30 15% 30%;
 
-    /* Purple primary for emotional sensitivity */
-    --primary: 260 80% 65%;
-    --primary-foreground: 210 20% 98%;
+    /* Soft yellow primary for warmth */
+    --primary: 45 60% 85%; /* Light yellow #FFF2CC */
+    --primary-foreground: 30 15% 30%;
 
-    /* Soft purple secondary */
-    --secondary: 255 20% 18%;
-    --secondary-foreground: 210 20% 85%;
+    /* Peach secondary for comfort */
+    --secondary: 20 45% 90%; /* Light peach #FDE0D9 */
+    --secondary-foreground: 30 15% 30%;
 
-    /* Muted purple tones */
-    --muted: 255 15% 15%;
-    --muted-foreground: 210 15% 65%;
+    /* Soft mint tones */
+    --muted: 150 40% 95%; /* Light mint #CAEFD1 */
+    --muted-foreground: 30 10% 50%;
 
-    /* Cyan accent for intelligence and support */
-    --accent: 185 85% 60%;
-    --accent-foreground: 255 15% 8%;
+    /* Soft green accent for peace */
+    --accent: 150 40% 85%; /* Mint green #CAEFD1 */
+    --accent-foreground: 30 15% 30%;
 
-    /* Soft red for alerts/warnings */
-    --destructive: 0 60% 65%;
-    --destructive-foreground: 210 20% 98%;
+    /* Soft coral for alerts */
+    --destructive: 10 50% 75%;
+    --destructive-foreground: 30 15% 30%;
 
-    --border: 255 15% 20%;
-    --input: 255 15% 18%;
-    --ring: 260 80% 65%;
+    --border: 30 20% 85%;
+    --input: 60 50% 96%;
+    --ring: 45 60% 75%;
 
     --radius: 0.75rem;
 
@@ -75,99 +75,99 @@ All colors MUST be HSL.
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Great Theme - Joyful, Energetic, Confident */
+  /* Great Theme - Joyful, soft yellow warmth */
   [data-theme="great"] {
-    --background: 44 100% 95%; /* #FDF6E3 warm cream */
-    --foreground: 25 100% 20%;
-    --card: 44 100% 97%;
-    --card-foreground: 25 100% 20%;
-    --primary: 48 100% 62%; /* #FFD43B sun yellow */
-    --primary-foreground: 25 100% 20%;
-    --secondary: 22 95% 63%; /* #FF8C42 bright orange */
-    --secondary-foreground: 25 100% 20%;
-    --accent: 22 95% 63%;
-    --accent-foreground: 25 100% 20%;
-    --muted: 44 100% 90%;
-    --muted-foreground: 25 50% 40%;
-    --border: 44 80% 85%;
-    --input: 44 100% 97%;
-    --ring: 48 100% 62%;
+    --background: 45 60% 94%; /* Soft yellow base */
+    --foreground: 30 20% 25%;
+    --card: 45 60% 96%;
+    --card-foreground: 30 20% 25%;
+    --primary: 45 50% 80%; /* Gentle yellow #FFF2CC */
+    --primary-foreground: 30 20% 25%;
+    --secondary: 20 40% 85%; /* Soft peach #FDE0D9 */
+    --secondary-foreground: 30 20% 25%;
+    --accent: 150 35% 85%; /* Light mint #CAEFD1 */
+    --accent-foreground: 30 20% 25%;
+    --muted: 45 40% 90%;
+    --muted-foreground: 30 15% 45%;
+    --border: 45 30% 80%;
+    --input: 45 60% 96%;
+    --ring: 45 50% 75%;
   }
 
-  /* Good Theme - Positive, Balanced, Comfortable */
+  /* Good Theme - Balanced mint freshness */
   [data-theme="good"] {
-    --background: 112 43% 97%; /* #F3F9F1 pale mint */
-    --foreground: 112 30% 20%;
-    --card: 112 43% 98%;
-    --card-foreground: 112 30% 20%;
-    --primary: 122 30% 74%; /* #A3D9A5 fresh green */
-    --primary-foreground: 112 30% 20%;
-    --secondary: 41 89% 78%; /* #FDD692 soft peach */
-    --secondary-foreground: 112 30% 20%;
-    --accent: 41 89% 78%;
-    --accent-foreground: 112 30% 20%;
-    --muted: 112 43% 92%;
-    --muted-foreground: 112 20% 40%;
-    --border: 112 30% 85%;
-    --input: 112 43% 98%;
-    --ring: 122 30% 74%;
+    --background: 150 40% 96%; /* Soft mint base */
+    --foreground: 30 20% 25%;
+    --card: 150 40% 98%;
+    --card-foreground: 30 20% 25%;
+    --primary: 150 35% 85%; /* Gentle mint #CAEFD1 */
+    --primary-foreground: 30 20% 25%;
+    --secondary: 180 25% 90%; /* Light cyan #CAF4F4 */
+    --secondary-foreground: 30 20% 25%;
+    --accent: 45 50% 85%; /* Soft yellow #FFF2CC */
+    --accent-foreground: 30 20% 25%;
+    --muted: 150 30% 92%;
+    --muted-foreground: 30 15% 45%;
+    --border: 150 25% 80%;
+    --input: 150 40% 98%;
+    --ring: 150 35% 80%;
   }
 
-  /* Okay Theme - Neutral, Indifferent, Content */
+  /* Okay Theme - Neutral cream comfort */
   [data-theme="okay"] {
-    --background: 0 0% 94%; /* #F0F0F0 soft grey */
-    --foreground: 210 15% 25%;
-    --card: 0 0% 96%;
-    --card-foreground: 210 15% 25%;
-    --primary: 206 25% 84%; /* #D6E4E5 light slate blue */
-    --primary-foreground: 210 15% 25%;
-    --secondary: 0 0% 75%; /* #C0C0C0 cool grey */
-    --secondary-foreground: 210 15% 25%;
-    --accent: 0 0% 75%;
-    --accent-foreground: 210 15% 25%;
-    --muted: 0 0% 90%;
-    --muted-foreground: 210 10% 45%;
-    --border: 0 0% 85%;
-    --input: 0 0% 96%;
-    --ring: 206 25% 84%;
+    --background: 60 45% 96%; /* Cream base #FCFFE9 */
+    --foreground: 30 20% 30%;
+    --card: 60 45% 98%;
+    --card-foreground: 30 20% 30%;
+    --primary: 60 40% 88%; /* Soft cream #FCFFE9 */
+    --primary-foreground: 30 20% 30%;
+    --secondary: 45 45% 88%; /* Light yellow #FFF2CC */
+    --secondary-foreground: 30 20% 30%;
+    --accent: 180 20% 88%; /* Pale cyan #CAF4F4 */
+    --accent-foreground: 30 20% 30%;
+    --muted: 60 30% 92%;
+    --muted-foreground: 30 15% 50%;
+    --border: 60 25% 85%;
+    --input: 60 45% 98%;
+    --ring: 60 40% 83%;
   }
 
-  /* Low Theme - Sad, Tired, Quiet */
+  /* Low Theme - Gentle peach warmth */
   [data-theme="low"] {
-    --background: 239 62% 96%; /* #E8EAF6 very soft indigo */
-    --foreground: 239 40% 25%;
-    --card: 239 62% 97%;
-    --card-foreground: 239 40% 25%;
-    --primary: 239 46% 73%; /* #9FA8DA dusty lavender */
-    --primary-foreground: 239 40% 25%;
-    --secondary: 258 59% 74%; /* #B39DDB subtle purple */
-    --secondary-foreground: 239 40% 25%;
-    --accent: 258 59% 74%;
-    --accent-foreground: 239 40% 25%;
-    --muted: 239 62% 92%;
-    --muted-foreground: 239 30% 45%;
-    --border: 239 40% 85%;
-    --input: 239 62% 97%;
-    --ring: 239 46% 73%;
+    --background: 20 40% 95%; /* Soft peach base */
+    --foreground: 30 20% 30%;
+    --card: 20 40% 97%;
+    --card-foreground: 30 20% 30%;
+    --primary: 20 35% 88%; /* Gentle peach #FDE0D9 */
+    --primary-foreground: 30 20% 30%;
+    --secondary: 60 40% 90%; /* Light cream #FCFFE9 */
+    --secondary-foreground: 30 20% 30%;
+    --accent: 180 25% 88%; /* Soft cyan #CAF4F4 */
+    --accent-foreground: 30 20% 30%;
+    --muted: 20 30% 92%;
+    --muted-foreground: 30 15% 50%;
+    --border: 20 25% 85%;
+    --input: 20 40% 97%;
+    --ring: 20 35% 83%;
   }
 
-  /* Struggling Theme - Anxious, Depressed, Need Support */
+  /* Struggling Theme - Soft cyan comfort */
   [data-theme="struggling"] {
-    --background: 218 100% 98%; /* #F5F7FB pale blue-white */
-    --foreground: 214 25% 25%;
-    --card: 218 100% 99%;
-    --card-foreground: 214 25% 25%;
-    --primary: 207 50% 74%; /* #A5C8E1 muted blue */
-    --primary-foreground: 214 25% 25%;
-    --secondary: 344 28% 78%; /* #D9B8C4 muted rose pink */
-    --secondary-foreground: 214 25% 25%;
-    --accent: 344 28% 78%;
-    --accent-foreground: 214 25% 25%;
-    --muted: 218 100% 95%;
-    --muted-foreground: 214 15% 45%;
-    --border: 214 20% 85%;
-    --input: 218 100% 99%;
-    --ring: 207 50% 74%;
+    --background: 180 30% 96%; /* Soft cyan base */
+    --foreground: 30 20% 30%;
+    --card: 180 30% 98%;
+    --card-foreground: 30 20% 30%;
+    --primary: 180 25% 88%; /* Gentle cyan #CAF4F4 */
+    --primary-foreground: 30 20% 30%;
+    --secondary: 150 30% 88%; /* Light mint #CAEFD1 */
+    --secondary-foreground: 30 20% 30%;
+    --accent: 20 30% 88%; /* Soft peach #FDE0D9 */
+    --accent-foreground: 30 20% 30%;
+    --muted: 180 25% 92%;
+    --muted-foreground: 30 15% 50%;
+    --border: 180 20% 85%;
+    --input: 180 30% 98%;
+    --ring: 180 25% 83%;
   }
 
 }

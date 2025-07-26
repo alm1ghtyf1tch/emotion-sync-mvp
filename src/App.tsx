@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Companion from "./pages/Companion";
 import CopingTools from "./pages/CopingTools";
 import EmotionBoard from "./pages/EmotionBoard";
+import MeetTherapist from "./pages/MeetTherapist";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -40,6 +41,7 @@ const App = () => (
                     <Route path="/companion" element={<Companion />} />
                     <Route path="/coping-tools" element={<CopingTools />} />
                     <Route path="/emotion-board" element={<EmotionBoard />} />
+                    <Route path="/meet-therapist" element={<MeetTherapist />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

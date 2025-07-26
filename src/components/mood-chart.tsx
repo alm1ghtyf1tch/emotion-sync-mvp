@@ -1,16 +1,8 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
-
-// Mock data for the last 7 days
-const moodData = [
-  { day: "Mon", mood: 3, date: "2024-01-15" },
-  { day: "Tue", mood: 4, date: "2024-01-16" },
-  { day: "Wed", mood: 2, date: "2024-01-17" },
-  { day: "Thu", mood: 3, date: "2024-01-18" },
-  { day: "Fri", mood: 4, date: "2024-01-19" },
-  { day: "Sat", mood: 5, date: "2024-01-20" },
-  { day: "Sun", mood: 4, date: "2024-01-21" },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -36,9 +28,91 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export function MoodChart() {
-  const averageMood = (
-    moodData.reduce((sum, day) => sum + day.mood, 0) / moodData.length
-  ).toFixed(1);
+  const { user } = useAuth();
+  const [moodData, setMoodData] = useState<Array<{day: string, mood: number, date: string}>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      loadMoodData();
+    } else {
+      setMoodData([]);
+      setLoading(false);
+    }
+  }, [user]);
+
+  const loadMoodData = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      // Get the last 7 days
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        days.push(date.toISOString().split('T')[0]);
+      }
+
+      const { data, error } = await supabase
+        .from('daily_moods')
+        .select('mood_value, mood_date')
+        .eq('user_id', user.id)
+        .in('mood_date', days)
+        .order('mood_date', { ascending: true });
+
+      if (error) {
+        console.error('Error loading mood data:', error);
+        return;
+      }
+
+      // Create chart data with all 7 days, filling in missing data
+      const chartData = days.map(date => {
+        const moodEntry = data?.find(entry => entry.mood_date === date);
+        const dayName = new Date(date).toLocaleDateString('en-US', { weekday: 'short' });
+        
+        return {
+          day: dayName,
+          mood: moodEntry?.mood_value || 0,
+          date: date,
+          hasData: !!moodEntry
+        };
+      });
+
+      setMoodData(chartData);
+    } catch (error) {
+      console.error('Error loading mood data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const dataWithMoods = moodData.filter(day => day.mood > 0);
+  const averageMood = dataWithMoods.length > 0 ? 
+    (dataWithMoods.reduce((sum, day) => sum + day.mood, 0) / dataWithMoods.length).toFixed(1) : 
+    '0.0';
+
+  if (loading) {
+    return (
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">Your Mood Journey</h3>
+        <div className="h-48 flex items-center justify-center text-muted-foreground">
+          Loading your mood data...
+        </div>
+      </Card>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">Your Mood Journey</h3>
+        <div className="h-48 flex items-center justify-center text-muted-foreground">
+          Sign in to see your mood tracking data
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-6">
@@ -51,31 +125,51 @@ export function MoodChart() {
       </div>
       
       <div className="h-48 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={moodData}>
-            <XAxis 
-              dataKey="day" 
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-            />
-            <YAxis 
-              domain={[1, 5]}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Line
-              type="monotone"
-              dataKey="mood"
-              stroke="hsl(var(--primary))"
-              strokeWidth={3}
-              dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 5 }}
-              activeDot={{ r: 7, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {dataWithMoods.length === 0 ? (
+          <div className="h-full flex items-center justify-center text-muted-foreground">
+            Start tracking your daily mood to see your journey
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={moodData}>
+              <XAxis 
+                dataKey="day" 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              />
+              <YAxis 
+                domain={[0, 5]}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Line
+                type="monotone"
+                dataKey="mood"
+                stroke="hsl(var(--primary))"
+                strokeWidth={3}
+                dot={(props: any) => {
+                  const { cx, cy, payload } = props;
+                  if (!payload.hasData) return null;
+                  return (
+                    <circle 
+                      cx={cx} 
+                      cy={cy} 
+                      r={5} 
+                      fill="hsl(var(--primary))" 
+                      strokeWidth={2} 
+                      stroke="hsl(var(--background))"
+                    />
+                  );
+                }}
+                activeDot={{ r: 7, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+                connectNulls={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
