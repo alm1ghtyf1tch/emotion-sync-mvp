@@ -20,9 +20,11 @@ export function DrawingCanvas() {
       backgroundColor: "#ffffff",
     });
 
-    // Initialize the freeDrawingBrush
-    canvas.freeDrawingBrush.color = "#333333";
-    canvas.freeDrawingBrush.width = 3;
+    // Initialize the freeDrawingBrush with null checks
+    if (canvas.freeDrawingBrush) {
+      canvas.freeDrawingBrush.color = "#333333";
+      canvas.freeDrawingBrush.width = 3;
+    }
     canvas.isDrawingMode = true;
 
     setFabricCanvas(canvas);
