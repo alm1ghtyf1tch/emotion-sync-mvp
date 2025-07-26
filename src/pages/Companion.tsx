@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useDailyMood } from "@/hooks/useDailyMood";
 import { 
   Send, 
   Mic, 
@@ -22,7 +23,47 @@ interface Message {
   emotion?: 'calm' | 'anxious' | 'sad' | 'happy' | 'angry';
 }
 
-const aiResponses = [
+// Template responses based on user's mood level
+const templateResponses = {
+  1: [ // Struggling
+    "I can see you're going through a really tough time right now. Your feelings are completely valid, and I want you to know that you're not alone.",
+    "It takes incredible strength to reach out when you're struggling. I'm here to listen and support you through this difficult moment.",
+    "What you're experiencing is real and significant. Remember that difficult times don't last forever, even when they feel overwhelming.",
+    "I hear your pain, and I want you to know that it's okay to not be okay. You're taking an important step by talking about how you feel.",
+    "If you're having thoughts of self-harm, please reach out to emergency services (112) or a crisis hotline immediately. Your safety matters."
+  ],
+  2: [ // Low
+    "I can sense that things feel heavy for you right now. It's completely understandable to feel this way, and I'm here to listen.",
+    "Low periods are part of the human experience, and you're not alone in feeling this way. What's been weighing on your mind lately?",
+    "Sometimes when we're feeling low, small steps forward can make a difference. Is there something that usually brings you a bit of comfort?",
+    "Thank you for sharing your feelings with me. It shows self-awareness and courage to acknowledge when we're struggling.",
+    "Your feelings are valid, and it's okay to have difficult days. What kind of support feels most helpful to you right now?"
+  ],
+  3: [ // Okay
+    "It sounds like you're in a neutral space today. That's perfectly okay - not every day has to be amazing or terrible.",
+    "Being 'okay' is actually a stable place to be. How are you taking care of yourself today?",
+    "I appreciate you checking in and sharing how you're feeling. Is there anything on your mind you'd like to talk about?",
+    "Stability can be valuable too. Sometimes okay days give us space to process and recharge. What's been going on for you?",
+    "Thank you for being here. Even on okay days, it's good to stay connected with how we're feeling."
+  ],
+  4: [ // Good
+    "I'm glad to hear you're feeling good today! It's wonderful when we can appreciate the positive moments in life.",
+    "That's great news! When we're feeling good, it can be a nice time to reflect on what's contributing to those positive feelings.",
+    "I love hearing that you're doing well. What's been going right for you lately?",
+    "It's beautiful to hear the positivity in your message. Good days are precious - I hope you're able to savor this feeling.",
+    "Your positive energy comes through in your words. What's been helping you feel good today?"
+  ],
+  5: [ // Great
+    "What an amazing energy you're bringing today! I can feel your joy and enthusiasm - it's wonderful.",
+    "I'm so happy to hear you're feeling great! These moments of joy are truly special. What's been bringing you such happiness?",
+    "Your positive spirit is infectious! It's beautiful when life feels this good. I hope you're taking time to really appreciate this feeling.",
+    "What a gift to feel this great! I love celebrating these high moments with you. What's been the highlight of your day?",
+    "You're radiating such positive energy today! These are the moments that make everything worthwhile. How are you planning to enjoy this feeling?"
+  ]
+};
+
+// General fallback responses when mood is unknown
+const generalResponses = [
   "I hear you, and I want you to know that your feelings are completely valid. What you're experiencing matters.",
   "Thank you for sharing that with me. It takes courage to open up about how you're feeling.",
   "I'm here to listen without judgment. Would you like to tell me more about what's been on your mind?",
@@ -32,6 +73,7 @@ const aiResponses = [
 ];
 
 export default function Companion() {
+  const { todayMood } = useDailyMood();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -71,6 +113,17 @@ export default function Companion() {
       return 'happy';
     }
     return 'calm';
+  };
+
+  const getTemplateResponse = (): string => {
+    // Use mood-based responses if mood is available
+    if (todayMood && todayMood >= 1 && todayMood <= 5) {
+      const responses = templateResponses[todayMood as keyof typeof templateResponses];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+    
+    // Fall back to general responses
+    return generalResponses[Math.floor(Math.random() * generalResponses.length)];
   };
 
   const handleSendMessage = async () => {
@@ -119,16 +172,16 @@ export default function Companion() {
     } catch (error) {
       console.error('API Error:', error);
       
-      // Fallback message on error
-      const errorMessage: Message = {
+      // Use template response based on user's current mood level
+      const templateMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `⚠️ Sorry, something went wrong with EmotionSync AI. Please try again later.\n_(Error details: ${error instanceof Error ? error.message : 'Unknown error'})_`,
+        content: getTemplateResponse(),
         sender: 'ai',
         timestamp: new Date(),
         emotion: 'calm'
       };
       
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, templateMessage]);
       setIsTyping(false);
     }
   };
