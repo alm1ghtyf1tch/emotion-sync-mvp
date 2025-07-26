@@ -5,6 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MusicPlayer } from "@/components/MusicPlayer";
+import { DrawingCanvas } from "@/components/DrawingCanvas";
+import { Footer } from "@/components/Footer";
 import { 
   Wind, 
   BookOpen, 
@@ -18,7 +20,8 @@ import {
   Volume2,
   Music2,
   SkipForward,
-  SkipBack
+  SkipBack,
+  Palette
 } from "lucide-react";
 
 interface Track {
@@ -184,7 +187,7 @@ export default function CopingTools() {
         </div>
 
         <Tabs defaultValue="breathing" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="breathing" className="flex items-center space-x-2">
               <Wind className="w-4 h-4" />
               <span className="hidden sm:inline">Breathing</span>
@@ -200,6 +203,10 @@ export default function CopingTools() {
             <TabsTrigger value="music" className="flex items-center space-x-2">
               <Music2 className="w-4 h-4" />
               <span className="hidden sm:inline">Music</span>
+            </TabsTrigger>
+            <TabsTrigger value="drawing" className="flex items-center space-x-2">
+              <Palette className="w-4 h-4" />
+              <span className="hidden sm:inline">Drawing</span>
             </TabsTrigger>
             <TabsTrigger value="reflection" className="flex items-center space-x-2">
               <Activity className="w-4 h-4" />
@@ -465,6 +472,11 @@ export default function CopingTools() {
             </Card>
           </TabsContent>
 
+          {/* Drawing Tool */}
+          <TabsContent value="drawing">
+            <DrawingCanvas />
+          </TabsContent>
+
           {/* Reflection */}
           <TabsContent value="reflection">
             <Card className="glass-effect p-6">
@@ -513,6 +525,8 @@ export default function CopingTools() {
           onClose={closeMusicPlayer}
         />
       </div>
+      
+      <Footer />
     </div>
   );
 }

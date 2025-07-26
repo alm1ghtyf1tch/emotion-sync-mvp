@@ -111,14 +111,28 @@ export function MoodTracker({ onMoodSelect, currentMood }: MoodTrackerProps) {
         })}
       </div>
 
-      {selectedMood && (
-        <div className="mt-6 p-4 bg-primary/10 rounded-lg border border-primary/20">
-          <p className="text-sm text-center">
-            Thank you for sharing. Your emotional awareness is a strength. 
-            {selectedMood <= 2 && " Remember, it's okay to not be okay. You're not alone."}
-            {selectedMood >= 4 && " I'm glad you're feeling good today!"}
-            {user && " Your mood has been saved for today."}
-          </p>
+      {selectedMood !== null && (
+        <div className="text-center mt-6 space-y-3">
+          <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
+            <p className="text-sm font-medium mb-2">
+              Thank you for sharing how you're feeling today!
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {user ? 
+                "Your mood has been saved and will help us provide better support." :
+                "Sign in to track your mood over time and unlock personalized insights."
+              }
+            </p>
+          </div>
+          
+          <Button 
+            onClick={() => setSelectedMood(null)} 
+            variant="outline" 
+            size="sm"
+            className="text-xs"
+          >
+            Reset Choice
+          </Button>
         </div>
       )}
     </Card>

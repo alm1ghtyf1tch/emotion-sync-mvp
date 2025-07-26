@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { FocusModes } from "@/components/FocusModes";
-import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield, LogOut, LogIn } from "lucide-react";
+import { Heart, MessageCircle, Activity, Settings, Menu, X, Shield, LogOut, LogIn, Stethoscope } from "lucide-react";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,6 +15,7 @@ export function Navigation() {
       { to: "/companion", label: "AI Companion", icon: MessageCircle },
       { to: "/coping-tools", label: "Coping Tools", icon: Activity },
       { to: "/emotion-board", label: "EmotionBoard", icon: Shield },
+      { to: "/meet-therapist", label: "Meet a Therapist", icon: Stethoscope },
       { to: "/settings", label: "Settings", icon: Settings },
     ] : [])
   ];
