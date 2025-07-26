@@ -99,7 +99,7 @@ export function DrawingCanvas() {
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        fabricCanvas.backgroundImage = img.src;
+        fabricCanvas.clear();
         fabricCanvas.renderAll();
       };
       img.src = e.target?.result as string;
