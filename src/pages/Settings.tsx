@@ -551,7 +551,7 @@ export default function Settings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card className="p-4 bg-secondary/20">
                       <h4 className="font-medium mb-2">National Suicide Prevention Lifeline</h4>
-                      <p className="text-2xl font-bold text-primary">988</p>
+                      <p className="text-2xl font-bold text-primary">112</p>
                       <p className="text-sm text-muted-foreground">24/7 crisis support</p>
                     </Card>
                     <Card className="p-4 bg-secondary/20">

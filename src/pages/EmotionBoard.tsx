@@ -20,6 +20,7 @@ import {
   Activity
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, AreaChart, Area, BarChart, Bar } from "recharts";
+import { InteractiveFlowChart } from "@/components/InteractiveFlowChart";
 
 // Mock data for demonstration
 const clientsData = [
@@ -426,6 +427,12 @@ export default function EmotionBoard() {
                 </div>
               </Card>
             </div>
+            
+            {/* Interactive Flow Charts Section */}
+            <Card className="p-6 mt-6">
+              <h3 className="text-lg font-semibold mb-4">Interactive Workflow Analysis</h3>
+              <InteractiveFlowChart />
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

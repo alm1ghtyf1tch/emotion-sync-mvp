@@ -291,7 +291,7 @@ export default function MeetTherapist() {
                 If you're in crisis or having thoughts of self-harm:
               </p>
               <Button variant="destructive" size="sm" className="w-full">
-                Crisis Hotline: 988
+                Crisis Hotline: 112
               </Button>
             </Card>
           </div>
