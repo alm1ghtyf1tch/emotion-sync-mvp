@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CalendarDays, Plus } from "lucide-react";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -29,8 +32,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export function MoodChart() {
   const { user } = useAuth();
-  const [moodData, setMoodData] = useState<Array<{day: string, mood: number, date: string}>>([]);
+  const [moodData, setMoodData] = useState<Array<{day: string, mood: number, date: string, hasData: boolean}>>([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -85,6 +90,50 @@ export function MoodChart() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const saveMood = async (date: string, moodValue: number) => {
+    if (!user) return;
+    
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('daily_moods')
+        .upsert({
+          user_id: user.id,
+          mood_value: moodValue,
+          mood_date: date
+        });
+
+      if (error) {
+        console.error('Error saving mood:', error);
+        return;
+      }
+
+      // Reload data to reflect changes
+      await loadMoodData();
+      setSelectedDate(null);
+    } catch (error) {
+      console.error('Error saving mood:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const getMoodColor = (moodValue: number) => {
+    if (moodValue >= 5) return "bg-green-500 text-white";
+    if (moodValue >= 4) return "bg-blue-500 text-white";
+    if (moodValue >= 3) return "bg-yellow-500 text-white";
+    if (moodValue >= 2) return "bg-orange-500 text-white";
+    return "bg-red-500 text-white";
+  };
+
+  const getMoodLabel = (moodValue: number) => {
+    if (moodValue >= 5) return "Great";
+    if (moodValue >= 4) return "Good";
+    if (moodValue >= 3) return "Okay";
+    if (moodValue >= 2) return "Low";
+    return "Struggling";
   };
 
   const dataWithMoods = moodData.filter(day => day.mood > 0);
@@ -182,6 +231,71 @@ export function MoodChart() {
             </LineChart>
           </ResponsiveContainer>
         )}
+      </div>
+
+      {/* Daily Mood Input Section */}
+      <div className="mt-6 p-4 bg-secondary/20 rounded-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <CalendarDays className="w-4 h-4" />
+          <h4 className="font-semibold text-sm">Record Your Daily Mood</h4>
+        </div>
+        
+        <div className="grid grid-cols-7 gap-2 mb-4">
+          {moodData.map((day, index) => (
+            <div key={index} className="text-center">
+              <div className="text-xs text-muted-foreground mb-2">{day.day}</div>
+              <div className="relative">
+                {day.hasData ? (
+                  <Badge 
+                    className={`w-full justify-center cursor-pointer ${getMoodColor(day.mood)}`}
+                    onClick={() => setSelectedDate(selectedDate === day.date ? null : day.date)}
+                  >
+                    {day.mood}
+                  </Badge>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-8 p-0"
+                    onClick={() => setSelectedDate(selectedDate === day.date ? null : day.date)}
+                    disabled={saving}
+                  >
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                )}
+                
+                {selectedDate === day.date && (
+                  <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-popover border rounded-lg p-2 shadow-lg z-10 min-w-max">
+                    <div className="text-xs text-muted-foreground mb-2 text-center">
+                      {new Date(day.date).toLocaleDateString()}
+                    </div>
+                    <div className="grid grid-cols-5 gap-1">
+                      {[1, 2, 3, 4, 5].map((mood) => (
+                        <Button
+                          key={mood}
+                          size="sm"
+                          variant="outline"
+                          className={`w-8 h-8 p-0 text-xs ${getMoodColor(mood)}`}
+                          onClick={() => saveMood(day.date, mood)}
+                          disabled={saving}
+                        >
+                          {mood}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="text-xs text-center mt-2 space-y-1">
+                      <div className="text-muted-foreground">1-Struggling → 5-Great</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="text-xs text-muted-foreground text-center">
+          Click on a day to record or update your mood (1-5 scale)
+        </div>
       </div>
 
       {/* Data Summary */}
