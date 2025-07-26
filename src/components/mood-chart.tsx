@@ -123,6 +123,17 @@ export function MoodChart() {
           <div className="text-lg font-semibold text-accent">{averageMood}/5</div>
         </div>
       </div>
+
+      {/* Mood Scale Legend */}
+      <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+        <div className="flex justify-between items-center text-xs text-muted-foreground">
+          <span>1 - Struggling</span>
+          <span>2 - Low</span>
+          <span>3 - Okay</span>
+          <span>4 - Good</span>
+          <span>5 - Great</span>
+        </div>
+      </div>
       
       <div className="h-48 w-full">
         {dataWithMoods.length === 0 ? (
@@ -139,7 +150,8 @@ export function MoodChart() {
                 tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
               />
               <YAxis 
-                domain={[0, 5]}
+                domain={[0.5, 5.5]}
+                ticks={[1, 2, 3, 4, 5]}
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
@@ -157,14 +169,14 @@ export function MoodChart() {
                     <circle 
                       cx={cx} 
                       cy={cy} 
-                      r={5} 
+                      r={6} 
                       fill="hsl(var(--primary))" 
                       strokeWidth={2} 
                       stroke="hsl(var(--background))"
                     />
                   );
                 }}
-                activeDot={{ r: 7, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+                activeDot={{ r: 8, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
                 connectNulls={false}
               />
             </LineChart>
@@ -172,10 +184,26 @@ export function MoodChart() {
         )}
       </div>
 
-      <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
-        <p className="text-sm text-center">
-          Your emotional patterns help us understand your journey better. 
-          Keep tracking to build self-awareness.
+      {/* Data Summary */}
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+          <div className="text-sm text-muted-foreground">Days tracked</div>
+          <div className="text-lg font-semibold text-primary">{dataWithMoods.length}/7</div>
+        </div>
+        <div className="p-3 bg-accent/10 rounded-lg border border-accent/20">
+          <div className="text-sm text-muted-foreground">Recent trend</div>
+          <div className="text-lg font-semibold text-accent">
+            {dataWithMoods.length >= 2 ? 
+              (dataWithMoods[dataWithMoods.length - 1].mood > dataWithMoods[dataWithMoods.length - 2].mood ? '↗' :
+               dataWithMoods[dataWithMoods.length - 1].mood < dataWithMoods[dataWithMoods.length - 2].mood ? '↘' : '→')
+              : '—'}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 p-3 bg-muted/30 rounded-lg">
+        <p className="text-sm text-center text-muted-foreground">
+          Track your mood daily to see patterns and build self-awareness over time.
         </p>
       </div>
     </Card>
